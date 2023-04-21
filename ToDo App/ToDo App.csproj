@@ -35,8 +35,28 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AttachedCommandBehavior">
+      <HintPath>..\..\CmdBehav_InterractTrigger\packages\AttachedCommandBehavior.2.0.0.0\lib\net35\AttachedCommandBehavior.dll</HintPath>
+    </Reference>
+    <Reference Include="CommonServiceLocator, Version=2.0.2.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonServiceLocator.2.0.2\lib\net47\CommonServiceLocator.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight, Version=5.4.1.0, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight.Extras, Version=5.4.1.0, Culture=neutral, PublicKeyToken=669f0b5e8f868abf, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.Extras.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight.Platform, Version=5.4.1.0, Culture=neutral, PublicKeyToken=5f873c45e98af8a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.Platform.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -55,12 +75,43 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Commands\RelayCommand.cs" />
-    <Compile Include="ViewModels\MainWindowVM.cs" />
+    <Compile Include="AttachedBehaviors\TreeViewSelectedItemBehavior.cs" />
+    <Compile Include="Commands\AddTaskCommand.cs" />
+    <Compile Include="Commands\EditTaskCommand.cs" />
+    <Compile Include="Commands\ShowTaskEditDialogCommand.cs" />
+    <Compile Include="Commands\ShowTaskInputDialogCommand.cs" />
+    <Compile Include="Commands\CloseTaskDialogCommand.cs" />
+    <Compile Include="Commands\CommandBase.cs" />
+    <Compile Include="Commands\SubscribeToCollectionChangedCommand.cs" />
+    <Compile Include="Modal.cs" />
+    <Compile Include="Models\Task.cs" />
+    <Compile Include="Models\TodoList.cs" />
+    <Compile Include="NavigationStores\ModalNavigationStore.cs" />
+    <Compile Include="Utilities\BoolToVisibilityConverter.cs" />
+    <Compile Include="Utilities\EnumHelper.cs" />
+    <Compile Include="Utilities\EnumToCollectionConverter.cs" />
+    <Compile Include="Utilities\RandomIdGenerator.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\TaskEditViewModel.cs" />
+    <Compile Include="ViewModels\TaskInputViewModel.cs" />
+    <Compile Include="ViewModels\TreeViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\StatisticsPanelVM.cs" />
+    <Compile Include="ViewModels\TaskVM.cs" />
+    <Compile Include="ViewModels\TodoListVM.cs" />
     <Compile Include="Views\StatisticsPanel.xaml.cs">
       <DependentUpon>StatisticsPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\TaskEditDialog.xaml.cs">
+      <DependentUpon>TaskEditDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TaskInputDialog.xaml.cs">
+      <DependentUpon>TaskInputDialog.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -74,6 +125,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\StatisticsPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TaskEditDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TaskInputDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -96,6 +155,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -104,8 +164,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

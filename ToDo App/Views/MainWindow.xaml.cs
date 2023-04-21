@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ToDo_App.ViewModels;
 
 namespace ToDo_App.Views
 {
@@ -23,6 +25,18 @@ namespace ToDo_App.Views
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            TodoListVM selectedTodo = e.NewValue as TodoListVM;
+            Debug.Assert(selectedTodo != null);
+            SelectedItemHelper.Content = selectedTodo;
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Opra-Bodi Botond, LF212, Informatica", "About", MessageBoxButton.OK);
         }
     }
 }
