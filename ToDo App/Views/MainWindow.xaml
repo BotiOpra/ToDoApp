@@ -68,7 +68,7 @@
                 <MenuItem Header="Find Task"/>
             </MenuItem>
             <MenuItem Header="View">
-                <MenuItem Header="Sort"/>
+                <MenuItem Header="Sort" Command="{Binding SortTasksCommand}"/>
                 <MenuItem Header="Filter"/>
                 <MenuItem Header="Statistics"/>
             </MenuItem>
@@ -117,33 +117,34 @@
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" VerticalAlignment="Bottom"
                        Content="{Binding TodoLabelMessage}"/>
-                <ListView Name="TaskListView" Grid.Row="1" BorderThickness="1" 
-                          ItemsSource="{Binding SelectedTodo.Tasks}" 
-                          SelectedItem="{Binding SelectedTask}">
-                    <ListView.Resources>
-                        <Style TargetType="ListViewItem">
+                <DataGrid Name="TaskDataGrid" Grid.Row="1" 
+                          ItemsSource="{Binding SelectedTodoTasksView}" 
+                          SelectedItem="{Binding SelectedTask}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Title}" 
+                            Header="Task Name" 
+                            Width="150"/>
+                        <DataGridTextColumn Binding="{Binding Priority}" 
+                            Header="Priority"
+                            Width="75"/>
+                        <DataGridTextColumn Binding="{Binding Category.Name}" 
+                            Header="Category" 
+                            Width="75"/>
+                        <DataGridTextColumn Binding="{Binding CreationDate, StringFormat=dd.MM.yyyy}" 
+                            Header="Created" 
+                            Width="75"/>
+                        <DataGridTextColumn Binding="{Binding DueDate, StringFormat=dd.MM.yyyy}" 
+                            Header="Due" 
+                            Width="75"/>
+                    </DataGrid.Columns>
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow">
                             <Setter Property="Foreground" Value="{Binding TaskItemColor}"/>
                         </Style>
-                    </ListView.Resources>
-                    <ListView.View>
-                        <GridView>
-
-                            <GridViewColumn DisplayMemberBinding="{Binding Title}" 
-                                            Header="Task Name" 
-                                            Width="150" 
-                                            CellTemplate="{StaticResource FirstCell}"/>
-                            <GridViewColumn DisplayMemberBinding="{Binding Priority}" 
-                                            Header="Priority"
-                                            Width="75"/>
-                            <GridViewColumn Header="Category" Width="75"
-                                            DisplayMemberBinding="{Binding Category}"/>
-                            <GridViewColumn Header="Created" Width="75"
-                                            DisplayMemberBinding="{Binding CreationDate, StringFormat=dd.MM.yyyy}"/>
-                            <GridViewColumn Header="Due" Width="75"
-                                            DisplayMemberBinding="{Binding DueDate, StringFormat=dd.MM.yyyy}"/>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
+                    </DataGrid.RowStyle>
+                </DataGrid>
                 <Label Grid.Row="2" VerticalAlignment="Bottom">Selected task's notes and attachments</Label>
                 <Border BorderThickness="1" BorderBrush="Gray" Grid.Row="3">
                     <TextBlock Padding="5" Background="White" Text="{Binding SelectedTask.Description}"/>

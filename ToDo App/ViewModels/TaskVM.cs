@@ -47,7 +47,10 @@ namespace ToDo_App.ViewModels
             get => _task.Category;
             set
             {
-                _task.Category = value;
+                if(value == null)
+                    _task.Category = Category.DefaultCategory;
+                else
+                    _task.Category = value;
                 OnPropertyChanged(nameof(Category));
             }
         }

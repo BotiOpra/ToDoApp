@@ -20,6 +20,9 @@ namespace ToDo_App.Models
 
     public class Category
     {
+        public static Category DefaultCategory = new Category("None");
+        public Category() { }
+
         public Category(string name)
         {
             Name = name;

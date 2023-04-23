@@ -67,7 +67,7 @@
         <Grid Grid.Row="4" Margin="0 0 0 5">
             <Label Content="Category:"/>
             <ComboBox HorizontalAlignment="Right" ItemsSource="{Binding Path=TaskCategories, Mode=OneTime}"
-                SelectedValue="{Binding Path=SelectedCategory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                SelectedValue="{Binding Path=SelectedCategory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Name"/>
         </Grid>
         <Grid Grid.Row="5" Margin="0 0 0 5">
             <Label Content="Priority:"/>

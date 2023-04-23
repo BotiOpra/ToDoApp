@@ -24,5 +24,5 @@ namespace ToDo_App.Views
         {
             InitializeComponent();
         }
-    }
+	}
 }

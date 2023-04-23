@@ -7,25 +7,38 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              Background="White">
+    <UserControl.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Margin" Value="5 0 0 0"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Padding" Value="5"/>
+        </Style>
+    </UserControl.Resources>
     <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Label Content="Manage Categories" FontWeight="Bold" HorizontalAlignment="Center" Margin="0 0 0 10"/>
-        <ListView Name="CategoryListView" Grid.Row="1" BorderThickness="1" 
-                          ItemsSource="{Binding TaskCategories}" 
-                          SelectedItem="{Binding SelectedCategory}">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <TextBox Text="{Binding Name}"/>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-        <StackPanel Orientation="Horizontal" Grid.Row="2">
-            <Button Content="Remove Category" Grid.Row="3"/>
+        <DataGrid Name="CategoryDataGrid" Grid.Row="1" BorderThickness="1" 
+          ItemsSource="{Binding TaskCategories}" 
+          SelectedItem="{Binding SelectedCategory}" 
+          AutoGenerateColumns="False"
+                  CanUserAddRows="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <TextBox x:Name="CategoryNameTextBox" Grid.Row="2" Margin="0 5 0 0" Text="{Binding EnteredName, UpdateSourceTrigger=PropertyChanged}"/>
+        <StackPanel Orientation="Horizontal" Grid.Row="3" Margin="0 5 0 0" HorizontalAlignment="Right">
+            <Button x:Name="AddButton" Content="Add" Command="{Binding AddCategoryCommand}"/>
+            <Button Content="Remove" Command="{Binding RemoveCategoryCommand}"/>
         </StackPanel>
+        <Button Content="Close" Grid.Row="4" Margin="0 5 0 0" HorizontalAlignment="Right" Command="{Binding CloseCommand}"/>
     </Grid>
 </UserControl>

@@ -3,11 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Forms;
+using System.Windows.Data;
 using System.Windows.Input;
 using ToDo_App.Commands;
 using ToDo_App.Models;
@@ -29,7 +28,11 @@ namespace ToDo_App.ViewModels
 			{
 				if (_selectedTodo != value)
 				{
+
 					_selectedTodo = value;
+					cvs.Source = _selectedTodo?.Tasks;
+					SelectedTodoTasksView.Refresh();
+					OnPropertyChanged(nameof(SelectedTodoTasksView));
 					OnPropertyChanged(nameof(SelectedTodo));
 					OnPropertyChanged(nameof(IsTodoSelected));
 					OnPropertyChanged(nameof(TodoLabelMessage));
@@ -82,7 +85,7 @@ namespace ToDo_App.ViewModels
 			get
 			{
 				if (_selectedTodo != null)
-					return string.Format("Viewing {0} to-do list. {1} tasks shown.", _selectedTodo.Name, _selectedTodo.Tasks.Count);
+					return string.Format("Viewing {0} to-do list. {1} task(s) shown.", _selectedTodo.Name, _selectedTodo.Tasks.Count);
 				return "No Todo selected";
 			}
 		}
@@ -174,6 +177,18 @@ namespace ToDo_App.ViewModels
 
 		public ICommand ShowCategoryManagementDialogCommand { get; }
 
+		private CollectionViewSource cvs = new CollectionViewSource();
+		public ListCollectionView SelectedTodoTasksView
+		{
+			get
+			{
+				return cvs.View as ListCollectionView;
+			}
+		}
+
+		public ICommand SortTasksCommand { get; }
+
+
 		public MainViewModel(ModalNavigationStore navigationStore)
 		{
 			_modalNavigationStore = navigationStore;
@@ -183,6 +198,7 @@ namespace ToDo_App.ViewModels
 			RootTodos.CollectionChanged += OnTodoListTodosChanged;
 			RootTodos.CollectionChanged += OnSelectedTodoTasksChanged;
 
+			TaskCategories.Add(Category.DefaultCategory);
 
 			TaskCategories.Add(new Category("kecske"));
 			TaskCategories.Add(new Category("foo"));
@@ -246,6 +262,14 @@ namespace ToDo_App.ViewModels
 			DeleteTodoCommand = new RelayCommand(RemoveSelectedTodo);
 
 			ShowCategoryManagementDialogCommand = new ShowCategoryManagementDialogCommand(TaskCategories, _modalNavigationStore);
+
+			SortTasksCommand = new RelayCommand(ExecuteTaskSorting);
+		}
+
+		public void ExecuteTaskSorting()
+		{
+			SelectedTodoTasksView.SortDescriptions.Clear();
+			SelectedTodoTasksView.SortDescriptions.Add(new SortDescription("Title", ListSortDirection.Ascending));
 		}
 
 		private void OnTodoListTodosChanged(object sender, NotifyCollectionChangedEventArgs e)
