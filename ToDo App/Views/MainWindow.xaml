@@ -39,14 +39,14 @@
                 <MenuItem Header="Exit"/>
             </MenuItem>
             <MenuItem Header="_TDL">
-                <MenuItem Header="Add Root TDL"/>
-                <MenuItem Header="Add Sub-TDL" Command="{Binding AddTodoCommand}"/>
+                <MenuItem Header="Add Root TDL" Command="{Binding ShowRootTodoInputDialogCommand}"/>
+                <MenuItem Header="Add Sub-TDL" Command="{Binding ShowTodoInputDialogCommand}" IsEnabled="{Binding IsTodoSelected}"/>
                 <Separator/>
-                <MenuItem Header="Edit"/>
-                <MenuItem Header="Delete"/>
-                <MenuItem Header="Move Up"/>
-                <MenuItem Header="Move Down"/>
-                <MenuItem Header="Change Path"/>
+                <MenuItem Header="Edit" Command="{Binding ShowTodoEditDialogCommand}" IsEnabled="{Binding IsTodoSelected}"/>
+                <MenuItem Header="Delete" Command="{Binding DeleteTodoCommand}" IsEnabled="{Binding IsTodoSelected}"/>
+                <MenuItem Header="Move Up" Command="{Binding MoveUpTodoItemCommand}" IsEnabled="{Binding IsTodoSelected}"/>
+                <MenuItem Header="Move Down" Command="{Binding MoveDownTodoItemCommand}" IsEnabled="{Binding IsTodoSelected}"/>
+                <MenuItem Header="Change Path" Command="{Binding ShowTodoEditDialogCommand}" IsEnabled="{Binding IsTodoSelected}"/>
             </MenuItem>
             <MenuItem Header="Task">
                 <MenuItem Header="Add" Command="{Binding ShowTaskInputDialogCommand}" IsEnabled="{Binding IsTodoSelected}"/>
@@ -57,19 +57,14 @@
                 <MenuItem Header="Move Up" 
                           Command="{Binding MoveUpTaskItemCommand}"
                           IsEnabled="{Binding IsTaskSelected}">
-                    <MenuItem.CommandParameter>
-                        <sys:Int32>1</sys:Int32>
-                    </MenuItem.CommandParameter>
                 </MenuItem>
                 <MenuItem Header="Move Down"
                           Command="{Binding MoveDownTaskItemCommand}"
                           IsEnabled="{Binding IsTaskSelected}">
-                    <MenuItem.CommandParameter>
-                        <sys:Int32>-1</sys:Int32>
-                    </MenuItem.CommandParameter>
                 </MenuItem>
                 <Separator/>
-                <MenuItem Header="Manage Category"/>
+                <MenuItem Header="Manage Category" 
+                          Command="{Binding ShowCategoryManagementDialogCommand}"/>
                 <MenuItem Header="Find Task"/>
             </MenuItem>
             <MenuItem Header="View">
@@ -99,16 +94,19 @@
                       SelectedItemChanged="TreeView_SelectedItemChanged">
                 <TreeView.Resources>
                     <HierarchicalDataTemplate ItemsSource="{Binding Todos}" DataType="{x:Type vm:TodoListVM}">
-                        <TextBlock Text="{Binding Name}"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="{Binding ImagePath}" Width="20" Margin="0 0 5 0"/>
+                            <TextBlock FontWeight="Bold" Text="{Binding Name}" VerticalAlignment="Center"/>
+                        </StackPanel>
                     </HierarchicalDataTemplate>
                 </TreeView.Resources>
             </TreeView>
             <local:StatisticsPanel Grid.Row="1" Margin="5" BorderThickness="1"
-                                   NrDueTodayTasks="12"
+                                   NrDueTodayTasks="{Binding NrDueTodayTasks}"
                                    NrDueTomorrowTasks="{Binding NrDueTomorrowTasks}"
-                                   NrOverDueTasks="99"
-                                   NrTasksLeft="120"
-                                   NrDoneTasks="92">
+                                   NrOverdueTasks="{Binding NrOverdueTasks}"
+                                   NrDoneTasks="{Binding NrDoneTasks}"
+                                   NrTasksLeft="{Binding NrTasksLeft}">
             </local:StatisticsPanel>
             <Grid Grid.Column="1" Grid.RowSpan="2" Margin="5">
                 <Grid.RowDefinitions>
@@ -117,7 +115,8 @@
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <Label Grid.Row="0" VerticalAlignment="Bottom">Viewing "Test" to-do list. 69 tasks shown.</Label>
+                <Label Grid.Row="0" VerticalAlignment="Bottom"
+                       Content="{Binding TodoLabelMessage}"/>
                 <ListView Name="TaskListView" Grid.Row="1" BorderThickness="1" 
                           ItemsSource="{Binding SelectedTodo.Tasks}" 
                           SelectedItem="{Binding SelectedTask}">
@@ -131,14 +130,16 @@
 
                             <GridViewColumn DisplayMemberBinding="{Binding Title}" 
                                             Header="Task Name" 
-                                            Width="250" 
+                                            Width="150" 
                                             CellTemplate="{StaticResource FirstCell}"/>
                             <GridViewColumn DisplayMemberBinding="{Binding Priority}" 
                                             Header="Priority"
                                             Width="75"/>
                             <GridViewColumn Header="Category" Width="75"
                                             DisplayMemberBinding="{Binding Category}"/>
-                            <GridViewColumn Header="Due Date" Width="75"
+                            <GridViewColumn Header="Created" Width="75"
+                                            DisplayMemberBinding="{Binding CreationDate, StringFormat=dd.MM.yyyy}"/>
+                            <GridViewColumn Header="Due" Width="75"
                                             DisplayMemberBinding="{Binding DueDate, StringFormat=dd.MM.yyyy}"/>
                         </GridView>
                     </ListView.View>
@@ -157,6 +158,15 @@
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type vm:TaskEditViewModel}">
                         <local:TaskEditDialog/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:TodoInputViewModel}">
+                        <local:TodoInputDialog/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:TodoEditViewModel}">
+                        <local:TodoEditDialog/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:CategoryManagementViewModel}">
+                        <local:CategoryManagementDialog/>
                     </DataTemplate>
                 </ContentControl.Resources>
             </custom:Modal>

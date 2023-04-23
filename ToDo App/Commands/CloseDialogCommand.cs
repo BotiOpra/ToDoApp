@@ -4,24 +4,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ToDo_App.NavigationStores;
-using ToDo_App.ViewModels;
 
 namespace ToDo_App.Commands
 {
-    public class ShowTaskEditDialogCommand : CommandBase
+    public class CloseDialogCommand : CommandBase
     {
-        private MainViewModel mainViewModel;
         private ModalNavigationStore _navigationStore;
 
-        public ShowTaskEditDialogCommand(MainViewModel mainVM, ModalNavigationStore navigationStore)
+        public CloseDialogCommand(ModalNavigationStore navigationStore)
         {
-            mainViewModel = mainVM;
             _navigationStore = navigationStore;
         }
 
         public override void Execute(object parameter)
         {
-            _navigationStore.CurrentViewModel = new TaskEditViewModel(mainViewModel, _navigationStore);
+            _navigationStore.CloseModal();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using ToDo_App.Commands;
@@ -13,9 +14,43 @@ namespace ToDo_App.ViewModels
         // TODO, when adding new TodoList, subscribe a function to collectionchanged event
 
         private readonly TodoList _todoList;
+        public TodoList TodoListModel { get { return _todoList; } }
 
         public ObservableCollection<TodoListVM> Todos { get; set; }
         public ObservableCollection<TaskVM> Tasks { get; set; }
+
+        public string Name
+        {
+            get
+            {
+                return _todoList.Name;
+            }
+            set
+            {
+                _todoList.Name = value;
+                OnPropertyChanged(nameof(Name));
+            }
+        }
+        public string ImagePath
+        {
+            get => _todoList.ImagePath;
+            set
+            {
+                _todoList.ImagePath = value;
+                OnPropertyChanged(nameof(ImagePath));
+            }
+        }
+
+        private TodoListVM _parentVM;
+        public TodoListVM ParentTodoVM
+        {
+            get => _parentVM;
+            set => _parentVM = value;
+        }
+        public TodoList ParentTodo
+        {
+            get => _parentVM?.TodoListModel;
+        }
 
         public TodoListVM(TodoList todoList)
         {
@@ -24,12 +59,12 @@ namespace ToDo_App.ViewModels
 
             _todoList = todoList;
 
-            foreach(var todo in _todoList.Todos)
+            foreach (var todo in _todoList.Todos)
             {
                 Todos.Add(new TodoListVM(todo));
             }
 
-            foreach(var task in _todoList.Tasks)
+            foreach (var task in _todoList.Tasks)
             {
                 Tasks.Add(new TaskVM(task));
             }
@@ -67,25 +102,41 @@ namespace ToDo_App.ViewModels
 
         public void AddTodo(TodoListVM newTodo)
         {
-            TodoList todoList = new TodoList(
-                newTodo.Name);
-            _todoList.AddTodo(todoList);
+            newTodo.ParentTodoVM = this;
+            newTodo.TodoListModel.ParentTodo = ParentTodo;
+            _todoList.AddTodo(newTodo.TodoListModel);
 
             // we don't add the newtodo, so that the todolistvm (that is shown on the screen) has, as model reference the todoList.
-            Todos.Add(new TodoListVM(todoList));
+            Todos.Add(newTodo);
         }
 
-        public string Name
+        public void UpdateTodo(TodoListVM newTodo)
         {
-            get
-            {
-                return _todoList.Name;
-            }
-            set
-            {
-                _todoList.Name = value;
-                OnPropertyChanged(nameof(Name));
-            }
+            _todoList.UpdateTodo(newTodo.TodoListModel);
+            ParentTodoVM = newTodo.ParentTodoVM;
+            Name = newTodo.Name;
+            ImagePath = newTodo.ImagePath;
+        }
+
+        public void EraseTodo(TodoListVM todo)
+        {
+            todo.Tasks.Clear();
+            todo.Todos.Clear();
+            Todos.Remove(todo);
+            _todoList.RemoveTodo(todo.TodoListModel);
+        }
+
+        public void RemoveTodo(TodoListVM todo)
+        {
+            Todos.Remove(todo);
+            _todoList.RemoveTodo(todo.TodoListModel);
+        }
+
+        public void RemoveTodo(string Id)
+        {
+            TodoListVM todo = Todos.First(t => t.TodoListModel.Id == Id);
+            Todos.Remove(todo);
+            _todoList.RemoveTodo(todo.TodoListModel);
         }
     }
 }

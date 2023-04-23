@@ -43,14 +43,14 @@ namespace ToDo_App.Views
         public static readonly DependencyProperty NrDueTomorrowTasksProperty =
             DependencyProperty.Register("NrDueTomorrowTasks", typeof(int), typeof(StatisticsPanel), new PropertyMetadata(0));
 
-        public int NrOverDueTasks
+        public int NrOverdueTasks
         {
-            get { return (int)GetValue(NrOverDueTasksProperty); }
-            set { SetValue(NrOverDueTasksProperty, value); }
+            get { return (int)GetValue(NrOverdueTasksProperty); }
+            set { SetValue(NrOverdueTasksProperty, value); }
         }
 
-        public static readonly DependencyProperty NrOverDueTasksProperty =
-            DependencyProperty.Register("NrOverDueTasks", typeof(int), typeof(StatisticsPanel), new PropertyMetadata(0));
+        public static readonly DependencyProperty NrOverdueTasksProperty =
+            DependencyProperty.Register("NrOverdueTasks", typeof(int), typeof(StatisticsPanel), new PropertyMetadata(0));
 
         public int NrDoneTasks
         {

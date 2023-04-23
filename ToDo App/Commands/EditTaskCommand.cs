@@ -23,23 +23,9 @@ namespace ToDo_App.Commands
 
         public override void Execute(object parameter)
         {
-            TaskEditViewModel taskEditViewModel = _navigationStore.CurrentViewModel as TaskEditViewModel;
+            //_selectedTodo.UpdateTask(_selectedTask);
 
-            // TODO: modify this
-
-            //Task newTask = new Task(
-            //    taskInputViewModel.Title,
-            //    taskInputViewModel.Description,
-            //    taskInputViewModel.DueDate,
-            //    taskInputViewModel.Category,
-            //    taskInputViewModel.Priority
-            //    );
-
-            //_selectedTodo.AddTask(new TaskVM(newTask));
-
-            _selectedTodo.UpdateTask(taskEditViewModel.CurrentTask);
-
-            _navigationStore.CloseModal();
+            //_navigationStore.CloseModal();
         }
     }
 }

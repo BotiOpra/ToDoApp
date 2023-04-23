@@ -18,14 +18,16 @@ namespace ToDo_App.Models
         Low
     }
 
-    public enum CategoryType
+    public class Category
     {
-        [Description("School")]
-        School,
-        [Description("Shopping")]
-        Shopping,
-        [Description("Other")]
-        Other,
+        public Category(string name)
+        {
+            Name = name;
+        }
+
+        public string Name { get; set; }
+        
+
     }
 
     public enum StatusType
@@ -43,27 +45,31 @@ namespace ToDo_App.Models
 
         public DateTime DueDate { get; set; }
 
+        public DateTime CreationDate { get; set; }
+
         public StatusType Status { get; set; }
-        public CategoryType Category { get; set; }
+        public Category Category { get; set; }
         public PriorityType Priority { get; set; }
 
 
-        public Task(string title, string description, DateTime dueDate, CategoryType category, PriorityType priority)
+        public Task(string title, string description, DateTime dueDate, Category category, PriorityType priority)
         {
             Id = RandomIdGenerator.GenerateId();
             Title = title;
             Description = description;
             DueDate = dueDate;
+            CreationDate = DateTime.Today;
             Category = category;
             Priority = priority;
             Status = StatusType.Created;
         }
 
-        public Task(string title, string description, DateTime dueDate, StatusType status, CategoryType category, PriorityType priority)
+        public Task(string title, string description, DateTime dueDate, StatusType status, Category category, PriorityType priority)
         {
             Title = title;
             Description = description;
             DueDate = dueDate;
+            CreationDate = DateTime.Today;
             Status = status;
             Category = category;
             Priority = priority;

@@ -7,6 +7,7 @@
              xmlns:vm="clr-namespace:ToDo_App.ViewModels"
              xmlns:sys="clr-namespace:System;assembly=mscorlib" 
              xmlns:utils="clr-namespace:ToDo_App.Utilities"
+             
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              Background="White">
@@ -34,7 +35,7 @@
         <Label Content="Edit Task" FontWeight="Bold" HorizontalAlignment="Center" Margin="0 0 0 10"/>
         <TextBox Margin="0 0 0 5" Grid.Row="1" Padding="2"  VerticalAlignment="Center" 
                  HorizontalAlignment="Stretch" x:Name="TitleTextBox"
-                 Text="{Binding Title}"/>
+                 Text="{Binding Title, UpdateSourceTrigger=Explicit}"/>
         <TextBlock IsHitTestVisible="False" Grid.Row="1" Text="Title" HorizontalAlignment="Left" Margin="5,0,0,0" Foreground="DarkGray">
             <TextBlock.Style>
                 <Style TargetType="{x:Type TextBlock}">
@@ -49,7 +50,7 @@
         </TextBlock>
         <TextBox Margin="0 0 0 5" Grid.Row="2" Height="100" Padding="2"  VerticalAlignment="Center" 
                  HorizontalAlignment="Stretch" x:Name="DescriptionTextBox"
-                 Text="{Binding Description}"/>
+                 Text="{Binding Description, UpdateSourceTrigger=Explicit}"/>
         <TextBlock Grid.Row="2" IsHitTestVisible="False" Text="Description" HorizontalAlignment="Left" Margin="5 0 0 0" Foreground="DarkGray">
             <TextBlock.Style>
                 <Style TargetType="{x:Type TextBlock}">
@@ -62,24 +63,23 @@
                 </Style>
             </TextBlock.Style>
         </TextBlock>
-        <DatePicker SelectedDate="{Binding DueDate}" Grid.Row="3" Margin="0 0 0 5" Text="" DisplayDate="{x:Static sys:DateTime.Now}" DisplayDateStart="{x:Static sys:DateTime.Now}"/>
+        <DatePicker x:Name="DueDatePicker" SelectedDate="{Binding DueDate, UpdateSourceTrigger=Explicit}" Grid.Row="3" Margin="0 0 0 5" Text="" DisplayDate="{x:Static sys:DateTime.Now}" DisplayDateStart="{x:Static sys:DateTime.Now}"/>
         <Grid Grid.Row="4" Margin="0 0 0 5">
-            <Label Content="Category:"/>
-            <ComboBox HorizontalAlignment="Right" ItemsSource="{Binding Path=Category, Converter={utils:EnumToCollectionConverter}, Mode=OneTime}"
-                SelectedValuePath="Value"
-                DisplayMemberPath="Description"
-                SelectedValue="{Binding Path=Category, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <Label x:Name="CategoryLabel" Content="Category:"/>
+            <ComboBox Name="CategoryCombo" HorizontalAlignment="Right" ItemsSource="{Binding Path=TaskCategories, Mode=OneTime, UpdateSourceTrigger=PropertyChanged}"
+                SelectedValue="{Binding Path=SelectedCategory, Mode=TwoWay, UpdateSourceTrigger=Explicit}" DisplayMemberPath="Name"/>
         </Grid>
         <Grid Grid.Row="5" Margin="0 0 0 5">
-            <Label Content="Priority:"/>
-            <ComboBox HorizontalAlignment="Right" ItemsSource="{Binding Path=Priority, Converter={utils:EnumToCollectionConverter}, Mode=OneTime}"
+            <Label x:Name="PriorityLabel" Content="Priority:"/>
+            <ComboBox Name="PriorityCombo" HorizontalAlignment="Right" ItemsSource="{Binding Path=Priority, Mode=OneTime, Converter={utils:EnumToCollectionConverter}, UpdateSourceTrigger=PropertyChanged}"
                 SelectedValuePath="Value"
                 DisplayMemberPath="Description"
-                SelectedValue="{Binding Path=Priority, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                SelectedValue="{Binding Path=Priority, Mode=TwoWay, UpdateSourceTrigger=Explicit}" />
         </Grid>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="6" Margin="0 5 0 0">
             <Button Command="{Binding EditTaskCommand}"
-                Content="Edit"/>
+                Content="Edit"
+                Click="Button_Click"/>
             <Button Content="Close" Command="{Binding CloseCommand}"/>
 
         </StackPanel>

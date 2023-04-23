@@ -29,7 +29,7 @@ namespace ToDo_App.Commands
                 taskInputViewModel.Title,
                 taskInputViewModel.Description,
                 taskInputViewModel.DueDate,
-                taskInputViewModel.Category,
+                taskInputViewModel.SelectedCategory,
                 taskInputViewModel.Priority
                 );
 

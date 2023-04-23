@@ -24,5 +24,14 @@ namespace ToDo_App.Views
         {
             InitializeComponent();
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            TitleTextBox.GetBindingExpression(TextBox.TextProperty).UpdateSource();
+            DescriptionTextBox.GetBindingExpression(TextBox.TextProperty).UpdateSource();
+            DueDatePicker.GetBindingExpression(DatePicker.SelectedDateProperty).UpdateSource();
+            CategoryCombo.GetBindingExpression(ComboBox.SelectedValueProperty).UpdateSource();
+            PriorityCombo.GetBindingExpression(ComboBox.SelectedValueProperty).UpdateSource();
+        }
     }
 }

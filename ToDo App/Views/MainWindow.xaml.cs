@@ -30,7 +30,7 @@ namespace ToDo_App.Views
         private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             TodoListVM selectedTodo = e.NewValue as TodoListVM;
-            Debug.Assert(selectedTodo != null);
+            
             SelectedItemHelper.Content = selectedTodo;
         }
 

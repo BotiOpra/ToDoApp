@@ -78,10 +78,14 @@
     <Compile Include="AttachedBehaviors\TreeViewSelectedItemBehavior.cs" />
     <Compile Include="Commands\AddTaskCommand.cs" />
     <Compile Include="Commands\EditTaskCommand.cs" />
+    <Compile Include="Commands\ShowCategoryManagementDialogCommand.cs" />
+    <Compile Include="Commands\ShowRootTodoInputDialogCommand.cs" />
     <Compile Include="Commands\ShowTaskEditDialogCommand.cs" />
     <Compile Include="Commands\ShowTaskInputDialogCommand.cs" />
-    <Compile Include="Commands\CloseTaskDialogCommand.cs" />
+    <Compile Include="Commands\CloseDialogCommand.cs" />
     <Compile Include="Commands\CommandBase.cs" />
+    <Compile Include="Commands\ShowTodoEditDialogCommand.cs" />
+    <Compile Include="Commands\ShowTodoInputDialogCommand.cs" />
     <Compile Include="Commands\SubscribeToCollectionChangedCommand.cs" />
     <Compile Include="Modal.cs" />
     <Compile Include="Models\Task.cs" />
@@ -91,14 +95,20 @@
     <Compile Include="Utilities\EnumHelper.cs" />
     <Compile Include="Utilities\EnumToCollectionConverter.cs" />
     <Compile Include="Utilities\RandomIdGenerator.cs" />
+    <Compile Include="ViewModels\CategoryManagementViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\TaskEditViewModel.cs" />
     <Compile Include="ViewModels\TaskInputViewModel.cs" />
+    <Compile Include="ViewModels\TodoEditViewModel.cs" />
+    <Compile Include="ViewModels\TodoInputViewModel.cs" />
     <Compile Include="ViewModels\TreeViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\StatisticsPanelVM.cs" />
     <Compile Include="ViewModels\TaskVM.cs" />
     <Compile Include="ViewModels\TodoListVM.cs" />
+    <Compile Include="Views\CategoryManagementDialog.xaml.cs">
+      <DependentUpon>CategoryManagementDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\StatisticsPanel.xaml.cs">
       <DependentUpon>StatisticsPanel.xaml</DependentUpon>
     </Compile>
@@ -108,9 +118,19 @@
     <Compile Include="Views\TaskInputDialog.xaml.cs">
       <DependentUpon>TaskInputDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\TodoEditDialog.xaml.cs">
+      <DependentUpon>TodoEditDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TodoInputDialog.xaml.cs">
+      <DependentUpon>TodoInputDialog.xaml</DependentUpon>
+    </Compile>
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\CategoryManagementDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -133,6 +153,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\TaskInputDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TodoEditDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TodoInputDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

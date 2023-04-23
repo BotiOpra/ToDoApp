@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Windows.Input;
@@ -11,13 +12,18 @@ namespace ToDo_App.ViewModels
 {
     public class TaskEditViewModel : ViewModelBase
     {
-        public TaskVM CurrentTask { get; }
+        private MainViewModel _mainViewModel;
+
+        public TaskVM CurrentTask => _mainViewModel.SelectedTask;
+
+        public TodoListVM CurrentTodo => _mainViewModel.SelectedTodo;
         public string Title
         {
             get => CurrentTask.Title;
             set
             {
                 CurrentTask.Title = value;
+                OnPropertyChanged(nameof(Title));
             }
         }
 
@@ -27,6 +33,7 @@ namespace ToDo_App.ViewModels
             set
             {
                 CurrentTask.Description = value;
+                OnPropertyChanged(nameof(Description));
             }
         }
 
@@ -36,15 +43,29 @@ namespace ToDo_App.ViewModels
             set
             {
                 CurrentTask.DueDate = value;
+                OnPropertyChanged(nameof(DueDate));
             }
         }
 
-        public CategoryType Category
+        public ObservableCollection<Category> TaskCategories
         {
-            get { return CurrentTask.Category; }
+            get
+            {
+                return _mainViewModel.TaskCategories;
+            }
+            //set
+            //{
+            //    _category = value;
+            //    OnPropertyChanged(nameof(Category));
+            //}
+        }
+        public Category SelectedCategory
+        {
+            get => CurrentTask.Category;
             set
             {
                 CurrentTask.Category = value;
+                OnPropertyChanged(nameof(SelectedCategory));
             }
         }
 
@@ -56,6 +77,7 @@ namespace ToDo_App.ViewModels
                 if (CurrentTask.Priority != value)
                 {
                     CurrentTask.Priority = value;
+                    OnPropertyChanged(nameof(Priority));
                 }
             }
         }
@@ -64,12 +86,13 @@ namespace ToDo_App.ViewModels
 
         public ICommand EditTaskCommand { get; }
 
-        public TaskEditViewModel(TodoListVM selectedTodo, TaskVM selectedTask, ModalNavigationStore navigationStore)
+        public TaskEditViewModel(MainViewModel mainViewModel, ModalNavigationStore navigationStore)
         {
-            CurrentTask = selectedTask;
+            _mainViewModel = mainViewModel;
+            SelectedCategory = CurrentTask.Category;
 
-            CloseCommand = new CloseTaskDialogCommand(navigationStore);
-            EditTaskCommand = new EditTaskCommand(navigationStore, selectedTodo, selectedTask);
+            CloseCommand = new CloseDialogCommand(navigationStore);
+            EditTaskCommand = new EditTaskCommand(navigationStore, CurrentTodo, CurrentTask);
         }
     }
 }

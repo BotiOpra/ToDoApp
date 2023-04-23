@@ -25,6 +25,7 @@ namespace ToDo_App.ViewModels
             set
             {
                 _task.Title = value;
+                OnPropertyChanged(nameof(Title));
             }
         }
 
@@ -37,15 +38,17 @@ namespace ToDo_App.ViewModels
             set
             {
                 _task.Description = value;
+                OnPropertyChanged(nameof(Description));
             }
         }
 
-        public CategoryType Category
+        public Category Category
         {
             get => _task.Category;
             set
             {
                 _task.Category = value;
+                OnPropertyChanged(nameof(Category));
             }
         }
 
@@ -69,6 +72,7 @@ namespace ToDo_App.ViewModels
             set
             {
                 _task.Priority = value;
+                OnPropertyChanged(nameof(Priority));
             }
         }
 
@@ -78,6 +82,16 @@ namespace ToDo_App.ViewModels
             set
             {
                 _task.DueDate = value;
+                OnPropertyChanged(nameof(DueDate));
+            }
+        }
+
+        public DateTime CreationDate
+        {
+            get => _task.CreationDate;
+            set
+            {
+                _task.CreationDate = value;
             }
         }
 

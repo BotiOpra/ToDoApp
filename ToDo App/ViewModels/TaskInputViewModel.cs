@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -13,6 +14,8 @@ namespace ToDo_App.ViewModels
 {
     public class TaskInputViewModel : ViewModelBase
     {
+        private MainViewModel _mainViewModel;
+
         private string _title;
         public string Title
         {
@@ -46,14 +49,27 @@ namespace ToDo_App.ViewModels
             }
         }
 
-        private CategoryType _category;
-        public CategoryType Category
+		public ObservableCollection<Category> TaskCategories
+		{
+			get
+			{
+				return _mainViewModel.TaskCategories;
+			}
+			//set
+			//{
+			//    _category = value;
+			//    OnPropertyChanged(nameof(Category));
+			//}
+		}
+
+		private Category _selectedCategory;
+        public Category SelectedCategory
         {
-            get { return _category; }
+            get => _selectedCategory;
             set
             {
-                _category = value;
-                OnPropertyChanged(nameof(Category));
+                _selectedCategory = value;
+                OnPropertyChanged(nameof(SelectedCategory));
             }
         }
 
@@ -75,10 +91,21 @@ namespace ToDo_App.ViewModels
 
         public ICommand AddTaskCommand { get; }
 
-        public TaskInputViewModel(TodoListVM selectedTodo, ModalNavigationStore navigationStore)
+        public TodoListVM SelectedTodo
         {
-            CloseCommand = new CloseTaskDialogCommand(navigationStore);
-            AddTaskCommand = new AddTaskCommand(navigationStore, selectedTodo);
+            get
+            {
+                return _mainViewModel.SelectedTodo;
+            }
+        }
+
+        public TaskInputViewModel(MainViewModel mainViewModel, ModalNavigationStore navigationStore)
+        {
+            _mainViewModel = mainViewModel;
+            _selectedCategory = TaskCategories.FirstOrDefault();
+
+            CloseCommand = new CloseDialogCommand(navigationStore);
+            AddTaskCommand = new AddTaskCommand(navigationStore, SelectedTodo);
         }
     }
 }
