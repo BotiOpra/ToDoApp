@@ -1,13 +1,16 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Xml.Linq;
 using ToDo_App.Commands;
 using ToDo_App.Models;
 using ToDo_App.NavigationStores;
@@ -16,63 +19,14 @@ namespace ToDo_App.ViewModels
 {
 	public class MainViewModel : ViewModelBase
 	{
-		public ObservableCollection<TodoListVM> RootTodos { get; set; }
-		public TodoListVM _selectedTodo;
-		public TodoListVM SelectedTodo
-		{
-			get
-			{
-				return _selectedTodo;
-			}
-			set
-			{
-				if (_selectedTodo != value)
-				{
-
-					_selectedTodo = value;
-					cvs.Source = _selectedTodo?.Tasks;
-					SelectedTodoTasksView.Refresh();
-					OnPropertyChanged(nameof(SelectedTodoTasksView));
-					OnPropertyChanged(nameof(SelectedTodo));
-					OnPropertyChanged(nameof(IsTodoSelected));
-					OnPropertyChanged(nameof(TodoLabelMessage));
-
-					MoveUpTodoItemCommand.RaiseCanExecuteChanged();
-					MoveDownTodoItemCommand.RaiseCanExecuteChanged();
-
-					_modalNavigationStore.CloseModal();
-				}
-			}
-		}
-
-		private TaskVM _selectedTask;
-		public TaskVM SelectedTask
-		{
-			get
-			{
-				return _selectedTask;
-			}
-			set
-			{
-				if (_selectedTask != value)
-				{
-					_selectedTask = value;
-					OnPropertyChanged(nameof(SelectedTask));
-					OnPropertyChanged(nameof(IsTaskSelected));
-					MoveUpTaskItemCommand.RaiseCanExecuteChanged();
-					MoveDownTaskItemCommand.RaiseCanExecuteChanged();
-
-					_modalNavigationStore.CloseModal();
-				}
-			}
-		}
+		public TodoAppViewModel TodoAppViewModel { get; set; }
 
 		public IList<TodoListVM> FlatTodoLists
 		{
 			get
 			{
 				var result = new List<TodoListVM>();
-				foreach (var root in RootTodos)
+				foreach (var root in TodoAppViewModel.RootTodos)
 				{
 					result.AddRange(FlattenTodoLists(root));
 				}
@@ -112,7 +66,7 @@ namespace ToDo_App.ViewModels
 		{
 			get
 			{
-				return CountAllTodoTasks(RootTodos, (TaskVM task) => { return task.DueDate.Date == DateTime.Today; });
+				return CountAllTodoTasks(TodoAppViewModel.RootTodos, (TaskVM task) => { return task.DueDate.Date == DateTime.Today; });
 			}
 		}
 
@@ -120,7 +74,7 @@ namespace ToDo_App.ViewModels
 		{
 			get
 			{
-				return CountAllTodoTasks(RootTodos, (TaskVM task) => { return task.DueDate.Date == DateTime.Today.AddDays(1); });
+				return CountAllTodoTasks(TodoAppViewModel.RootTodos, (TaskVM task) => { return task.DueDate.Date == DateTime.Today.AddDays(1); });
 			}
 		}
 
@@ -128,7 +82,7 @@ namespace ToDo_App.ViewModels
 		{
 			get
 			{
-				return CountAllTodoTasks(RootTodos, (TaskVM task) => { return task.DueDate.Date < DateTime.Today; });
+				return CountAllTodoTasks(TodoAppViewModel.RootTodos, (TaskVM task) => { return task.DueDate.Date < DateTime.Today; });
 			}
 		}
 
@@ -136,14 +90,14 @@ namespace ToDo_App.ViewModels
 		{
 			get
 			{
-				return CountAllTodoTasks(RootTodos, (TaskVM task) => { return task.Status == StatusType.Done; });
+				return CountAllTodoTasks(TodoAppViewModel.RootTodos, (TaskVM task) => { return task.Status == StatusType.Done; });
 			}
 		}
 		public int NrTasksLeft
 		{
 			get
 			{
-				return CountAllTodoTasks(RootTodos, (TaskVM task) => { return task.Status != StatusType.Done; });
+				return CountAllTodoTasks(TodoAppViewModel.RootTodos, (TaskVM task) => { return task.Status != StatusType.Done; });
 			}
 		}
 
@@ -188,15 +142,21 @@ namespace ToDo_App.ViewModels
 
 		public ICommand SortTasksCommand { get; }
 
+		public ICommand FilterTasksCommand { get; }
+
+		public ICommand FindTaskCommand { get; }
+
 
 		public MainViewModel(ModalNavigationStore navigationStore)
 		{
 			_modalNavigationStore = navigationStore;
 			_modalNavigationStore.CurrentViewModelChanged += OnCurrentModalViewModelChanged;
 
-			RootTodos = new ObservableCollection<TodoListVM>();
-			RootTodos.CollectionChanged += OnTodoListTodosChanged;
-			RootTodos.CollectionChanged += OnSelectedTodoTasksChanged;
+			var todoApp = new TodoApp();
+			TodoAppViewModel = new TodoAppViewModel(todoApp);
+
+			TodoAppViewModel.RootTodos.CollectionChanged += OnTodoListTodosChanged;
+			TodoAppViewModel.RootTodos.CollectionChanged += OnSelectedTodoTasksChanged;
 
 			TaskCategories.Add(Category.DefaultCategory);
 
@@ -213,8 +173,8 @@ namespace ToDo_App.ViewModels
 			var todoList1VM = new TodoListVM(todoList1);
 			var todoList2VM = new TodoListVM(todoList2);
 
-			RootTodos.Add(todoList1VM);
-			RootTodos.Add(todoList2VM);
+			TodoAppViewModel.AddRootTodo(todoList1VM);
+			TodoAppViewModel.AddRootTodo(todoList2VM);
 
 			todoList1VM.AddTodo(new TodoListVM(todoList3));
 			todoList2VM.AddTodo(new TodoListVM(todoList4));
@@ -238,7 +198,7 @@ namespace ToDo_App.ViewModels
 				{
 					if (SelectedTodo.ParentTodoVM != null)
 						return SelectedTodo.ParentTodoVM?.Todos.IndexOf(SelectedTodo) != 0;
-					return RootTodos.IndexOf(SelectedTodo) != 0;
+					return TodoAppViewModel.RootTodos.IndexOf(SelectedTodo) != 0;
 				}
 				return false;
 			});
@@ -249,7 +209,7 @@ namespace ToDo_App.ViewModels
 				{
 					if (SelectedTodo.ParentTodoVM != null)
 						return SelectedTodo.ParentTodoVM?.Todos.IndexOf(SelectedTodo) != SelectedTodo.ParentTodoVM?.Todos.Count - 1;
-					return RootTodos.IndexOf(SelectedTodo) != RootTodos.Count - 1;
+					return TodoAppViewModel.RootTodos.IndexOf(SelectedTodo) != TodoAppViewModel.RootTodos.Count - 1;
 				}
 				return false;
 			});
@@ -263,13 +223,25 @@ namespace ToDo_App.ViewModels
 
 			ShowCategoryManagementDialogCommand = new ShowCategoryManagementDialogCommand(TaskCategories, _modalNavigationStore);
 
-			SortTasksCommand = new RelayCommand(ExecuteTaskSorting);
+			SortTasksCommand = new RelayCommand<string>(ExecuteTaskSorting);
+			FilterTasksCommand = new ShowFilterTasksDialogCommand(cvs, TaskCategories, _modalNavigationStore);
+
+			FindTaskCommand = new ShowFindTaskDialogCommand(this, _modalNavigationStore);
 		}
 
-		public void ExecuteTaskSorting()
+		public void ExecuteTaskSorting(string columnName)
 		{
+			ListSortDirection currentSortDirection = SelectedTodoTasksView.SortDescriptions.FirstOrDefault().Direction;
 			SelectedTodoTasksView.SortDescriptions.Clear();
-			SelectedTodoTasksView.SortDescriptions.Add(new SortDescription("Title", ListSortDirection.Ascending));
+
+			if (currentSortDirection == ListSortDirection.Ascending)
+			{
+				SelectedTodoTasksView.SortDescriptions.Add(new SortDescription(columnName, ListSortDirection.Descending));
+			}
+			else
+			{
+				SelectedTodoTasksView.SortDescriptions.Add(new SortDescription(columnName, ListSortDirection.Ascending));
+			}
 		}
 
 		private void OnTodoListTodosChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -318,6 +290,28 @@ namespace ToDo_App.ViewModels
 			return nrTasksDueToday;
 		}
 
+		public IList<TaskVM> GetAllTodoTasks(TodoListVM todo)
+		{
+
+			var result = new List<TaskVM>();
+			result.AddRange(todo.Tasks);
+			foreach (var child in todo.Todos)
+			{
+				result.AddRange(GetAllTodoTasks(child));
+			}
+			return result;
+		}
+
+		public IList<TaskVM> GetAllTasks()
+		{
+			var result = new List<TaskVM>();
+			foreach (var root in TodoAppViewModel.RootTodos)
+			{
+				result.AddRange(GetAllTodoTasks(root));
+			}
+			return result;
+		}
+
 		private void OnSelectedTodoTasksChanged(object sender, NotifyCollectionChangedEventArgs e)
 		{
 			OnPropertyChanged(nameof(NrDueTodayTasks));
@@ -358,7 +352,7 @@ namespace ToDo_App.ViewModels
 			if (parentTodo != null)
 				parentTodo.EraseTodo(SelectedTodo);
 			else
-				RootTodos.Remove(SelectedTodo);
+				TodoAppViewModel.RootTodos.Remove(SelectedTodo);
 		}
 
 		public void SetTaskDone()

@@ -29,8 +29,6 @@ namespace ToDo_App.Models
         }
 
         public string Name { get; set; }
-        
-
     }
 
     public enum StatusType
@@ -43,6 +41,8 @@ namespace ToDo_App.Models
     public class Task
     { 
         public string Id { get; set; }
+
+        public TodoList TodoList { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
 

@@ -82,6 +82,7 @@ namespace ToDo_App.ViewModels
                 taskVM.Category,
                 taskVM.Priority
                 );
+            task.TodoList = _todoList;
             _todoList.AddTask(task);
             Tasks.Add(new TaskVM(task));
         }
@@ -105,7 +106,7 @@ namespace ToDo_App.ViewModels
         public void AddTodo(TodoListVM newTodo)
         {
             newTodo.ParentTodoVM = this;
-            newTodo.TodoListModel.ParentTodo = ParentTodo;
+            newTodo.TodoListModel.ParentTodo = TodoListModel;
             _todoList.AddTodo(newTodo.TodoListModel);
 
             // we don't add the newtodo, so that the todolistvm (that is shown on the screen) has, as model reference the todoList.

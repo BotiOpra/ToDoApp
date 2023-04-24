@@ -79,6 +79,8 @@
     <Compile Include="Commands\AddTaskCommand.cs" />
     <Compile Include="Commands\EditTaskCommand.cs" />
     <Compile Include="Commands\ShowCategoryManagementDialogCommand.cs" />
+    <Compile Include="Commands\ShowFilterTasksDialogCommand.cs" />
+    <Compile Include="Commands\ShowFindTaskDialogCommand.cs" />
     <Compile Include="Commands\ShowRootTodoInputDialogCommand.cs" />
     <Compile Include="Commands\ShowTaskEditDialogCommand.cs" />
     <Compile Include="Commands\ShowTaskInputDialogCommand.cs" />
@@ -89,6 +91,7 @@
     <Compile Include="Commands\SubscribeToCollectionChangedCommand.cs" />
     <Compile Include="Modal.cs" />
     <Compile Include="Models\Task.cs" />
+    <Compile Include="Models\TodoApp.cs" />
     <Compile Include="Models\TodoList.cs" />
     <Compile Include="NavigationStores\ModalNavigationStore.cs" />
     <Compile Include="Utilities\BoolToVisibilityConverter.cs" />
@@ -96,11 +99,14 @@
     <Compile Include="Utilities\EnumToCollectionConverter.cs" />
     <Compile Include="Utilities\RandomIdGenerator.cs" />
     <Compile Include="ViewModels\CategoryManagementViewModel.cs" />
+    <Compile Include="ViewModels\FilterTasksDialogViewModel.cs" />
+    <Compile Include="ViewModels\FindTaskDialogViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\TaskEditViewModel.cs" />
     <Compile Include="ViewModels\TaskInputViewModel.cs" />
     <Compile Include="ViewModels\TodoEditViewModel.cs" />
     <Compile Include="ViewModels\TodoInputViewModel.cs" />
+    <Compile Include="ViewModels\TodoAppViewModel.cs" />
     <Compile Include="ViewModels\TreeViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\StatisticsPanelVM.cs" />
@@ -108,6 +114,12 @@
     <Compile Include="ViewModels\TodoListVM.cs" />
     <Compile Include="Views\CategoryManagementDialog.xaml.cs">
       <DependentUpon>CategoryManagementDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FilterTasksDialog.xaml.cs">
+      <DependentUpon>FilterTasksDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FindTaskDialog.xaml.cs">
+      <DependentUpon>FindTaskDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\StatisticsPanel.xaml.cs">
       <DependentUpon>StatisticsPanel.xaml</DependentUpon>
@@ -129,6 +141,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\CategoryManagementDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FilterTasksDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FindTaskDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -65,11 +65,15 @@
                 <Separator/>
                 <MenuItem Header="Manage Category" 
                           Command="{Binding ShowCategoryManagementDialogCommand}"/>
-                <MenuItem Header="Find Task"/>
+                <MenuItem Header="Find Task" Command="{Binding FindTaskCommand}"/>
             </MenuItem>
             <MenuItem Header="View">
-                <MenuItem Header="Sort" Command="{Binding SortTasksCommand}"/>
-                <MenuItem Header="Filter"/>
+                <MenuItem Header="Sort By..." IsEnabled="{Binding IsTodoSelected}">
+                    <MenuItem Header="Deadline" Command="{Binding SortTasksCommand}" CommandParameter="DueDate"/>
+                    <MenuItem Header="Priority" Command="{Binding SortTasksCommand}" CommandParameter="Priority"/>
+                </MenuItem>
+                <MenuItem Header="Filter" Command="{Binding FilterTasksCommand}" IsEnabled="{Binding IsTodoSelected}">
+                </MenuItem>
                 <MenuItem Header="Statistics"/>
             </MenuItem>
             <MenuItem Name="HelpMenu" Header="Help">
@@ -168,6 +172,12 @@
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type vm:CategoryManagementViewModel}">
                         <local:CategoryManagementDialog/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:FilterTasksDialogViewModel}">
+                        <local:FilterTasksDialog/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:FindTaskDialogViewModel}">
+                        <local:FindTaskDialog/>
                     </DataTemplate>
                 </ContentControl.Resources>
             </custom:Modal>

@@ -11,6 +11,7 @@ namespace ToDo_App.ViewModels
     {
         private readonly Task _task;
         public Task TaskModel => _task;
+        public string TodoListName => _task.TodoList.Name;
         public TaskVM(Task task)
         {
             _task = task;
@@ -95,6 +96,30 @@ namespace ToDo_App.ViewModels
             set
             {
                 _task.CreationDate = value;
+            }
+        }
+
+        public IList<string> Location
+        {
+            get
+            {
+                var locationList = new List<string>();
+                TodoList parent = _task.TodoList;
+				while (parent != null)
+                {
+                    locationList.Add(parent.Name);
+                    parent = parent.ParentTodo;
+                }
+                locationList.Reverse();
+                return locationList;
+            }
+        }
+
+        public string LocationString
+        {
+            get
+            {
+                return string.Join(" > ", Location);
             }
         }
 

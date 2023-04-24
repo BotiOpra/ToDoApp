@@ -87,6 +87,8 @@ namespace ToDo_App.ViewModels
                 SelectedTodo.TodoListModel.ImagePath = filePath;
             }
 
+            if (SelectedParent == null)
+                return;
             TodoListVM oldParent = SelectedTodo.ParentTodoVM;
             //it becomes subtodo
             if (IsSubTodo)

@@ -51,7 +51,6 @@ namespace ToDo_App
             DependencyProperty.Register("IsOpen", typeof(bool), typeof(Modal),
                 new PropertyMetadata(false));
 
-
         public bool IsOpen
         {
             get { return (bool)GetValue(IsOpenProperty); }
